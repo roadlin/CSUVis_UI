@@ -1,0 +1,13 @@
+.riverPath {
+    fill: none;
+    stroke-width: 2;
+    stroke: #555;
+}
+.highlight {
+    stroke: #f04148;
+    stroke-width: 4;
+    fill: none;
+}
+#tooltip p {
+    margin: 0;
+}

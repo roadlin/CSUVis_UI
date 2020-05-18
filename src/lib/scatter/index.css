@@ -1,0 +1,11 @@
+.noises circle, .data circle{
+    opacity: .5;
+}
+
+.data path {
+    opacity: .2;
+}
+
+.borderPath {
+    stroke: #000;
+}

@@ -1,0 +1,10 @@
+.stackViewBox .axis line{
+    stroke: #C2C2C2;
+}
+
+.stackViewBox .tick .gridLine {
+	shape-rendering: crispEdges;
+    stroke-opacity: .5;
+    stroke: #C2C2C2;
+    stroke-width: 2;
+}

@@ -1,0 +1,85 @@
+body {
+  margin: 0;
+  background-color: #f2f3f5;
+}
+.nav {
+  width: 96%;
+  height: 50px;
+  background-color: #ccc;
+  margin: 0 0 10px 0;
+  padding: 0 2%;
+  position: fixed;
+  top: 0;
+}
+.nav li {
+  list-style: none;
+  float: left;
+  margin-right: 10px;
+}
+.nav::after {
+  clear: both;
+  content: '';
+  width: 0;
+  height: 0;
+  display: block;
+}
+.nav li.active {
+  background-color: #fff;
+}
+
+.nav a {
+  padding: 5px 25px;
+  text-decoration: none;
+  color: #333;
+  font-size: 18px;
+  line-height: 50px;
+}
+
+a:visited {
+  color: #333;
+}
+
+button {
+  padding: 5px 10px;
+  margin: 0 5px;
+  line-height: 2em;
+  background-color: cornflowerblue;
+  border: none;
+  border-radius: 5px;
+  border-image: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+svg {
+  margin: 5px auto;
+}
+
+.canvas {
+  padding: 5px 10px;
+}
+
+.title {
+  font-size: 20px;
+  color: #333;
+  margin: 5px 0;
+}
+
+.app select {
+  padding: 5px;
+  line-height: 1.5em;
+  border: 1px solid #555;
+  border-radius: 5px;
+}
+.content {
+  width: 1600px;
+  padding: 15px;
+  background-color: #ffffff;
+  box-shadow: 5px 5px 25px #555;
+  margin: 70px auto 20px auto;
+}
+
+.strapViewBox rect {
+  stroke: #fff;
+  stroke-width: 0.3;
+}

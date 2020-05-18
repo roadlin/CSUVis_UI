@@ -1,0 +1,44 @@
+.axis {
+    font-size: 18px;
+}
+
+.axisTag {
+    font-size: 22px;
+    fill: #333;
+    text-anchor: end;
+}
+
+.x {
+    text-anchor: middle;
+}
+
+.y.left {
+    text-anchor: end;
+}
+.y.right, .y.right .axisTag {
+    text-anchor: start;
+}
+
+.axis path, .axis line{
+    fill: none;
+    stroke: #555;
+    shape-rendering: crispEdges;
+    stroke-width: 1;
+}
+
+.axis text {
+    font: 10px sans-serif;
+    stroke: #555;
+}
+
+
+.tick:not(:last-of-type):not(:first-of-type) .gridLine {
+	shape-rendering: crispEdges;
+    stroke-opacity: .5;
+    stroke: #C2C2C2;
+    stroke-width: 1;
+}
+
+.axis .tick:last-of-type {
+    display: none;
+}
