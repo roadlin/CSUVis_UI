@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-12 15:27:51
- * @LastEditTime: 2020-05-17 21:34:05
+ * @LastEditTime: 2020-05-18 22:20:23
  * @LastEditors: Please set LastEditors
  * @Description: 用于无线电背景下的散点图
  * @FilePath: /va_module/src/examplePages/ScatterExample.js
@@ -9,7 +9,6 @@
 import React, { useState } from 'react'
 import { Scatter } from '../lib'
 
-// import {data as clusterMock, updateData as updateScatter} from '../data/cluster'
 import clusterMock from '../data/test/cluster'
 import * as d3 from 'd3'
 
@@ -19,33 +18,57 @@ function ScatterTest({
     width,
     height,
     xDomain,
-    yDomain,
+    yAxis,
     enbaleGeo,
+    doSample,
+    visualStyle,
     data
 }) {
+    const noises = data.filter(d => d.category === -1)
+    const noisesDbmDomain = [d3.min(noises.map(d => d.dbm)), d3.max(noises.map(d => d.dbm))]
+    const dataColor = visualStyle === 'noise' ? '#c2c2c2' : d => {
+        if(d.isNewSignal) {                                      // 新信号颜色编码
+            return ['#ffe88c', '#f7b941', '#ffb78d'][d.category-24];
+          } else { 
+            let averageDbm = d.dbm;
+            let color;
+            if(averageDbm > -65) {
+              color = d3.scaleLinear()
+                            .domain([-65, -50, -40])
+                              .range(['#1cbaf4', '#2f93b0', '#3b7e9d']);
+            } else {
+              color = d3.scaleLinear()
+                            .domain([-90, -82, -74, -65])
+                              .range(['#8ec6dd', '#a7fffe', '#84e2ec', '#63dbf5']);
+            }
+            return d3.scaleSequential(color)(averageDbm);
+        }
+    }
+    const noiseColor = visualStyle === 'noise' ? d => d3.scaleSequential(d3.interpolateYlOrBr).domain(noisesDbmDomain)(d.dbm) : '#555'
     return (<Scatter
         width = {width}
         height = {height}
         padding = {padding}
         xAxis = {{
             key: 'freq', 
-            tag: 'freq/Hz', 
+            tag: '', 
             type: 'number', 
             step: '2', 
             domain: xDomain, 
             formatFn: d => Number(d).toFixed(2), 
             scaleFn: d3.scaleLinear, 
-            direction: 'bottom', 
+            direction: yAxis.key === 'time' ? 'top' : 'bottom', 
             isShow: true
         }}
         yAxis = {{
-            key: 'band', 
-            tag: 'Band/dB', 
-            step: 500, 
-            domain: yDomain,
-            type: 'number', 
-            formatFn: d => Number(d).toFixed(2), 
-            scaleFn: d3.scaleLinear, 
+            // key: 'band', 
+            // tag: 'Band/dB', 
+            // step: 500, 
+            // domain: yDomain,
+            ...yAxis,
+            type: yAxis.key === 'time' ? 'date' : 'number', 
+            formatFn: yAxis.key === 'time' ?  d => d3.timeFormat("%H:%M:%S")(d) : d => Number(d).toFixed(2), 
+            scaleFn: yAxis.key === 'time' ? d3.scaleTime : d3.scaleLinear, 
             direction: 'left', 
             isShow: true
         }}
@@ -55,33 +78,12 @@ function ScatterTest({
         }}
         data = {data}
         noiseRule = {d => d.category === -1}
-        noiseColor = {'#555'}
-        dataColor = {
-            // d => d3.scaleSequential(d3.interpolateSpectral)
-            //         .domain([0, 25])(d.category)
-            d => {
-                if(d.isNewSignal) {                                      // 新信号颜色编码
-                    return ['#ffe88c', '#f7b941', '#ffb78d'][d.category-24];
-                  } else { 
-                    let averageDbm = d.dbm;
-                    let color;
-                    if(averageDbm > -65) {
-                      color = d3.scaleLinear()
-                                    .domain([-65, -50, -40])
-                                      .range(['#1cbaf4', '#2f93b0', '#3b7e9d']);
-                    } else {
-                      color = d3.scaleLinear()
-                                    .domain([-90, -82, -74, -65])
-                                      .range(['#8ec6dd', '#a7fffe', '#84e2ec', '#63dbf5']);
-                    }
-                    return d3.scaleSequential(color)(averageDbm);
-                }
-            }
-        }
-        doSampleNoise = {true}
+        noiseColor = {noiseColor}
+        dataColor = {dataColor}
+        doSampleNoise = {doSample}
         sampleFn = {noises => {
             let result = []
-            let sampleInterval = 20
+            let sampleInterval = 10
             let maxIndex = noises.length - 1
             if(maxIndex < sampleInterval) {
                 return noises
@@ -107,16 +109,17 @@ function ScatterTest({
         geoHoverHandle = {d => (`
             <p>SignalID: ${d[0].isNewSignal ? 'un' : 'au'}${d[0].category}</p>
             <p>SFV Number: ${d.length}</p>
-        `)}
+          `)}
     ></Scatter>)
 }
 
 const App = function () {
-    // const [data, setData] = useState(clusterMock)
     const data = clusterMock.filter(d => {
         return d.time >= new Date('2016-04-07 15:16:08').getTime() && d.time < new Date('2016-04-07 15:16:38').getTime()
     })
     const [enableGeo, setEnableGeo] = useState(false)
+    const [doSample, setDoSample] = useState(true)
+
     const getDomain = (data, key) => {
         let vals = data.map(d => (d[key])).sort((a, b) => a - b)
         return [vals[0], vals[vals.length - 1]]
@@ -124,20 +127,112 @@ const App = function () {
 
     let bandRange = getDomain(data, 'band')
     let freqRange = getDomain(data, 'freq')
-    let xDomain = [freqRange[0] - 2, freqRange[1] + 2]
-    let yDomain = [bandRange[0] - 200, bandRange[1] + 200]
+    let snrRange = getDomain(data, 'snr')
+    let dbmRange = getDomain(data, 'dbm')
+    let timeRange = getDomain(data, 'time')
 
-    return <div className='app'>
-        {/* <button onClick = {() => setData(updateScatter())}>更改数据集</button> */}
-        <button onClick = {() => setEnableGeo(!enableGeo)}>切换模式</button>
+    let xDomain = [Math.floor(freqRange[0]) - 1, Math.ceil(freqRange[1]) + 1]
 
+    const [visualStyle, setVisualStyle] = useState('category')
+    const [yAxis, setYAxis] = useState({
+        key: 'band', 
+        tag: '', 
+        step: 500, 
+        domain: [bandRange[0] - 100, bandRange[1] + 100],
+    })
+
+    const selectYAxis = e => {
+        switch(e.target.value) {
+            case '0':
+                setYAxis({
+                    key: 'band', 
+                    tag: '', 
+                    step: 500, 
+                    domain: [bandRange[0] - 200, bandRange[1] + 200],
+                })
+                break;
+            case '1':
+                setYAxis({
+                    key: 'snr', 
+                    tag: '', 
+                    step: 10, 
+                    domain: [snrRange[0] - 10, snrRange[1] + 10],
+                })
+                break;
+            case '2':
+                setYAxis({
+                    key: 'dbm', 
+                    tag: '', 
+                    step: 10, 
+                    domain: [dbmRange[0] - 10, dbmRange[1] + 10],
+                })
+                break;
+            case '3':
+                setYAxis({
+                    key: 'time', 
+                    tag: 'Time', 
+                    step: 10, 
+                    domain: [timeRange[0] - 5*1000, timeRange[1] + 5*1000],
+                })
+                break;
+            default:
+                setYAxis({
+                    key: 'band', 
+                    tag: '', 
+                    step: 500, 
+                    domain: [bandRange[0] - 200, bandRange[1] + 200],
+                })
+        }
+    }
+    const selectStyle = e => {
+        switch(e.target.value) {
+            case '0':
+                setVisualStyle('category')
+                setEnableGeo(false)
+                setDoSample(true)
+                break;
+            case '1':
+                setVisualStyle('category')
+                setEnableGeo(true)
+                setDoSample(true)
+                break;
+            case '2':
+                setVisualStyle('noise')
+                setEnableGeo(true)
+                setDoSample(false)
+                break;
+            default:
+                setVisualStyle('category')
+                setEnableGeo(false)
+                setDoSample(true)
+        }
+    }
+
+    return <div>
+        <div className='selectBox'>
+            <span>编码模式: </span>
+            <select onChange = {selectStyle} defaultValue = {0} style={{marginRight: '10px'}}>
+                <option value="0">原始数据模式</option>
+                <option value="1">聚类结果模式</option>
+                <option value="2">噪声模式</option>
+            </select>
+            <span>Y轴编码: </span>
+            <select onChange = {selectYAxis} defaultValue = {0} style={{marginRight: '10px'}}>
+                <option value="0">属性1</option>
+                <option value="1">属性2</option>
+                <option value="2">属性3</option>
+                <option value="3">Time</option>
+            </select>
+        </div>
         <ScatterTest
             width = {width}
             height = {height}
             xDomain = {xDomain}
-            yDomain = {yDomain}
+            yAxis = {yAxis}
             enbaleGeo = {enableGeo}
-            data = {clusterMock}
+            doSample = {doSample}
+            visualStyle = {visualStyle}
+            data = {data}
         ></ScatterTest>
     </div>
 }

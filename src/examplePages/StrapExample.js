@@ -1,16 +1,14 @@
 /*
  * @Author: your name
  * @Date: 2020-05-11 21:13:42
- * @LastEditTime: 2020-05-17 17:52:58
+ * @LastEditTime: 2020-05-18 21:48:12
  * @LastEditors: Please set LastEditors
  * @Description: 无线电背景下的态势频带图
  * @FilePath: /va_module/src/examplePages/StrapExample.js
  */
 import React from 'react'
 import { Strap } from '../lib'
-import ExampleCreate from './ExampleCreate'
 
-// import {data as situationMock, updateData as updateStrap} from '../data/situation'
 import situationMock from '../data/test/situation'
 import * as d3 from 'd3'
 
@@ -29,7 +27,7 @@ function EqualStrapTest({
         padding = {padding}
         xAxis = {{
             key: 'freq', 
-            tag: 'freq/Hz', 
+            tag: '', 
             type: 'number', 
             step: '2', 
             domain: xDomain, 
@@ -40,7 +38,7 @@ function EqualStrapTest({
         }}
         yAxis = {{
             key: 'time', 
-            tag: 'time/年月日', 
+            tag: 'Time', 
             type: 'date', 
             step: 10, 
             domain: yDomain, 
@@ -78,7 +76,7 @@ function LayerStrapTest({
         padding = {padding}
         xAxis = {{
             key: 'freq', 
-            tag: 'freq/Hz', 
+            tag: '', 
             type: 'number', 
             step: '2', 
             domain: xDomain, 
@@ -89,7 +87,7 @@ function LayerStrapTest({
         }}
         yAxis = {{
             key: 'time', 
-            tag: 'time/年月日', 
+            tag: 'time', 
             type: 'date', 
             step: 10, 
             domain: yDomain,
@@ -114,45 +112,6 @@ function LayerStrapTest({
         }}
     ></Strap>)
 }
-
-// const Container = ExampleCreate(function ({
-//     width,
-//     height,
-//     data,
-//     getDomain
-// }) {
-//     const xDomain = getDomain(data, 'freq')
-//     const yDomain = getDomain(data, 'time')
-
-//     return (<div>
-//         <div>等距坐标轴</div>
-//         <EqualStrapTest
-//             width = {width}
-//             height = {height}
-//             xDomain = {xDomain}
-//             yDomain = {yDomain}
-//             data = {data}                 
-//         ></EqualStrapTest>
-//         <div>多层级坐标轴</div>
-//         <LayerStrapTest
-//             width = {width}
-//             height = {height}
-//             xDomain = {xDomain}
-//             yDomain = {[yDomain[0], yDomain[1] - 10*1000, yDomain[1]]}
-//             data = {data}                 
-//         ></LayerStrapTest>
-//     </div>)
-// })
-
-// const App = function () {
-//     return <Container
-//         width = {width}
-//         height = {height}
-//         mockData = {situationMock}
-//         title = '频带图示例'
-//         updateData = {updateStrap}
-//     ></Container>
-// }
 
 const App = function () {
     const data = situationMock

@@ -1,13 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2020-05-12 15:27:32
- * @LastEditTime: 2020-05-17 17:49:22
+ * @LastEditTime: 2020-05-18 21:56:12
  * @LastEditors: Please set LastEditors
  * @Description: 用于辊道窑背景下的堆栈图示例
  * @FilePath: /va_module/src/examplePages/StackExample.js
  */
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Stack } from '../lib'
 
 // import {data as zoneMock, createData as updateStack} from '../data/zones'
@@ -73,21 +73,13 @@ function StackTest({
 }
 
 const App = function () {
-    // const [data, setData] = useState(zoneMock)
     const data = zoneMock
     const getDomain = (data, key) => {
         let vals = data.map(d => (d[key])).sort((a, b) => a - b)
         return [vals[0], vals[vals.length - 1]]
     }
-
-    // const changeData = () => {
-    //     const startTimeRange = [new Date('2020-01-25 10:00:00').getTime(), new Date('2020-05-20 23:00:00').getTime()]
-    //     const random = Math.floor(Math.random() * (startTimeRange[1] - startTimeRange[0]) + startTimeRange[0])
-    //     return updateStack(random)
-    // }
-
+    
     return <div className='app'>
-        {/* <button onClick = {() => setData(changeData())}>更改数据集</button> */}
         <StackTest
             width = {width}
             height = {height}

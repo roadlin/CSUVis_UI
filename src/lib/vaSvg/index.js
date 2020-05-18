@@ -20,7 +20,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /*
  * @Author: Lin Xiaoru
  * @Date: 2020-04-16 21:17:12
- * @LastEditTime: 2020-05-18 21:15:00
+ * @LastEditTime: 2020-05-18 22:15:33
  * @LastEditors: Please set LastEditors
  * @Description: 视图的包裹容器，本质上是个 svg，自定义添加坐标和宽高
  * @FilePath: /va_module/src/components/axes/index.js
@@ -186,46 +186,33 @@ var VASvg = function VASvg(_ref) {
         var ticks = view.selectAll('.axis.x .tick');
         ticks.filter(':last-of-type').style('display', 'block');
       }
-
-      yAxes.forEach(function (y) {
-        // 如果不显示 x 轴属性信息，则需要把最后一个刻度信息显示出来
-        if (!y.tag) {
-          var _ticks = view.selectAll(".y." + y.direction + " .tick");
-
-          _ticks.filter(':last-of-type').style('display', 'block');
-        }
-      });
     } // 渲染 y 坐标
 
 
     if (yAxes.length) {
       yAxes.forEach(function (y, i) {
         if (y && y.isShow) {
-          // console.log('y', y)
           createAxis(Object.assign({
             tickValues: yTicks.current[i]
           }, y), yRange[i], yRefs[i], xRange); // 当 x 坐标轴在上方时，y 轴的标记信息应该在底部
 
           if (xAxis.direction === 'top') {
-            var _ticks2 = d3.select(yRefs[i].current).selectAll('.tick');
+            var _ticks = d3.select(yRefs[i].current).selectAll('.tick');
 
-            _ticks2.filter(':first-of-type').style('display', 'none');
+            _ticks.filter(':first-of-type').style('display', 'none');
 
-            _ticks2.filter(':last-of-type').style('display', 'block');
+            _ticks.filter(':last-of-type').style('display', 'block');
+          } // 如果不显示 x 轴属性信息，则需要把最后一个刻度信息显示出来
+
+
+          if (!y.tag) {
+            var _ticks2 = view.selectAll(".y." + y.direction + " .tick");
+
+            _ticks2.filter("" + (xAxis.direction === 'top' ? ':first-of-type' : ':last-of-type')).style('display', 'block');
           }
         }
       });
-    } // if (yAxis && yAxis.isShow) {
-    //     // xAxis.direction === 'top' && yRange.reverse()
-    //     createAxis(Object.assign({tickValues: yTicks.current}, yAxis), yRange, yRef, xRange)
-    //     // 当 x 坐标轴在上方时，y 轴的标记信息应该在底部
-    //     if(xAxis.direction === 'top') {
-    //         let ticks = view.selectAll('.axis.y .tick')
-    //         ticks.filter(':first-of-type').style('display', 'none')
-    //         ticks.filter(':last-of-type').style('display', 'block')
-    //     }
-    // }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    } // eslint-disable-next-line react-hooks/exhaustive-deps
 
   }, [xAxis, yAxes, height, width, padding, refObj]);
   return /*#__PURE__*/_react.default.createElement("svg", {

@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-12 15:28:01
- * @LastEditTime: 2020-05-18 21:04:52
+ * @LastEditTime: 2020-05-18 21:31:42
  * @LastEditors: Please set LastEditors
  * @Description: 应用于辊道窑背景下的多层次面积图
  * @FilePath: /va_module/src/examplePages/areaExample.js
@@ -9,13 +9,12 @@
 
 import React, { useState } from 'react'
 import { MultiArea } from '../lib'
-import ExampleCreate from './ExampleCreate'
 
 // import {data as temperatureMock, updateData as updateRiver} from '../data/temperature'
 import temperatureMock from '../data/test/temperature'
 import * as d3 from 'd3'
 
-const width = 1500, height = 300, padding = [30, 50, 50, 50]
+const width = 1500, height = 300, padding = [10, 50, 50, 50]
 
 function AreaTest({
     width,
@@ -58,7 +57,7 @@ function AreaTest({
         // y 轴配置信息，支持双坐标，每一个元素配置信息基本同 x 轴配置
         yAxis = {[{
             key: 'current', 
-            tag: 'I/A', 
+            tag: '', 
             type: 'number', 
             step: 50, 
             domain: [0, 150], 
@@ -69,7 +68,7 @@ function AreaTest({
             showGrid: true
         }, {
             key: 'voltage', 
-            tag: 'U/V', 
+            tag: '', 
             type: 'number', 
             step: 150, 
             domain: [0, 450], 
@@ -101,35 +100,8 @@ function AreaTest({
     ></MultiArea>)
 }
 
-// const Container = ExampleCreate(function ({
-//     width,
-//     height,
-//     data,
-//     getDomain
-// }) {
-//     const xDomain = getDomain(data, 'time')
-//     return (<div>
-//         <AreaTest
-//             width = {width}
-//             height = {height}
-//             xDomain = {xDomain}
-//             levels = {[-30, -20, -10, 0, 10, 20, 30]}
-//             setting = {700}         
-//             data = {data}    
-//         ></AreaTest>
-//     </div>)
-// })
-
-// const App = function () {
-//     return <Container
-//         width = {width}
-//         height = {height}
-//         mockData = {temperatureMock}
-//         title = '多层面积图示例'
-//         updateData = {updateRiver}
-//     ></Container>
-// }
 const App = function () {
+    const [dataIndex, setDataIndex] = useState(1)
     const [data, setData] = useState(temperatureMock.sensorTopData)
     const getDomain = (data, key) => {
         let vals = data.map(d => (d[key])).sort((a, b) => a - b)
@@ -137,8 +109,9 @@ const App = function () {
     }
     const xDomain = getDomain(temperatureMock.sensorTopData.concat(temperatureMock.sensorBottomData), 'time')
     return <div style={{width: `${width}px`, margin: '0 auto'}}>
-        <button onClick = {() => setData(temperatureMock.sensorTopData)}>测试数据1</button>
-        <button onClick = {() => setData(temperatureMock.sensorBottomData)}>测试数据2</button>
+        <button onClick = {() => {setData(temperatureMock.sensorTopData); setDataIndex(1)}}>测试数据1</button>
+        <button onClick = {() => {setData(temperatureMock.sensorBottomData); setDataIndex(2)}}>测试数据2</button>
+        <div style = {{marginTop: '20px', marginLeft: '5px'}}>当前数据集：测试数据{dataIndex}</div>
         <AreaTest
             width = {width}
             height = {height}

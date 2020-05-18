@@ -64,12 +64,15 @@ svg {
   color: #333;
   margin: 5px 0;
 }
-
-.app select {
+.selectBox span {
+  line-height: 1.5em;
+}
+.selectBox select {
   padding: 5px;
   line-height: 1.5em;
   border: 1px solid #555;
   border-radius: 5px;
+  vertical-align: middle;
 }
 .content {
   width: 1600px;

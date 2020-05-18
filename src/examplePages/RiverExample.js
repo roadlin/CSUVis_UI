@@ -1,16 +1,13 @@
 /*
  * @Author: your name
  * @Date: 2020-04-27 11:24:26
- * @LastEditTime: 2020-05-17 17:50:53
+ * @LastEditTime: 2020-05-18 21:37:30
  * @LastEditors: Please set LastEditors
  * @Description: 用于无线电背景下的流图示例
  * @FilePath: /va_module/src/AppTest.js
  */
 import React from 'react'
 import { River } from '../lib'
-import ExampleCreate from './ExampleCreate'
-
-// import {data as clusterMock, updateData as updateRiver} from '../data/cluster'
 import clusterMock from '../data/test/cluster'
 import * as d3 from 'd3'
 
@@ -32,7 +29,7 @@ function RiverTest({
         padding = {[50, 30, 50, 80]}
         xAxis = {{
             key: 'freq', 
-            tag: 'Freq/Hz', 
+            tag: '', 
             type: 'number', 
             step: '2', 
             domain: xDomain, 
@@ -43,7 +40,7 @@ function RiverTest({
         }}
         yAxis = {{
             key: 'time', 
-            tag: 'Time/时分秒', 
+            tag: 'Time', 
             type: 'date', 
             step: 10, 
             domain: yDomain, 
@@ -62,9 +59,6 @@ function RiverTest({
         }}
         leftPoly = {{
             key: 'dbm',  
-            // scale: d3.scaleSequential(d3.scaleLinear()
-            //         .domain(leftDomain)
-            //           .range(['#3b7e9d', '#2cd4f9', '#c9fbfb'])),
             scale: value => {
                 let ipColor =  d3.scaleLinear()
                     .domain(leftDomain)
@@ -109,37 +103,6 @@ function RiverTest({
     ></River>)
 }
 
-// const Container = ExampleCreate(function ({
-//     width,
-//     height,
-//     data,
-//     getDomain
-// }) {
-//     const snrDomain = getDomain(data, 'snr')
-
-//     return (<div>
-//         <RiverTest
-//             width = {width}
-//             height = {height}
-//             xDomain = {[932, 964]}
-//             yDomain = {getDomain(data, 'time')}
-//             bandDomain = {getDomain(data, 'band')}                    
-//             leftDomain = {[0, -45, -100]}                   
-//             rightDomain = {[snrDomain[0], (snrDomain[0] + snrDomain[1]) / 2 ,snrDomain[1]]} 
-//             data = {data}                 
-//         ></RiverTest>
-//     </div>)
-// })
-
-// const App = function () {
-//     return <Container
-//         width = {width}
-//         height = {height}
-//         mockData = {clusterMock}
-//         title = '流图示例'
-//         updateData = {updateRiver}
-//     ></Container>
-// }
 const App = function () {
     const data = clusterMock
     const getDomain = (data, key) => {
