@@ -1,44 +1,43 @@
 /*
  * @Author: Lin Xiaoru
  * @Date: 2020-05-11 18:45:58
- * @LastEditTime: 2020-05-18 21:36:59
+ * @LastEditTime: 2020-05-20 18:48:03
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /va_module/src/App.js
  */
 import React, { useState } from 'react'
-import { BrowserRouter, Route, Link } from 'react-router-dom'
-import RiverEx from './examplePages/RiverExample'
-import StrapEx from './examplePages/StrapExample'
-import StackEx from './examplePages/StackExample'
-import ScatterEx from './examplePages/ScatterExample'
-import AreaEx from './examplePages/AreaExample'
-// import CompositeEx from './examplePages/CompositeExample'
-
+import { BrowserRouter, Route, Link, Redirect } from 'react-router-dom'
+import asyncImport from './AsyncComponent'
 import './App.css'
 
 function App() {
-    let urlInfo = window.location.href.split('/')
-    const [activeItem, setActiveItem] = useState(`/${urlInfo[urlInfo.length - 1]}`)
+    const [activeItem, setActiveItem] = useState(0)
     const navList = [{
         url: '/river',
-        text: '多维时变河流图'
+        text: '多维时变河流图',
+        component: () => import('./examplePages/RiverExample')
     }, {
         url: '/strap',
-        text: '短期单变量态势演化图'
+        text: '短期单变量态势演化图',
+        component: () => import('./examplePages/StrapExample')
     }, {
         url: '/stack',
-        text: '长期多变量态势演化图'
+        text: '长期多变量态势演化图',
+        component: () => import('./examplePages/StackExample')
     }, {
         url: '/scatter',
-        text: '多模式聚类分析图'
+        text: '多模式聚类分析图',
+        component: () => import('./examplePages/ScatterExample')
     }, {
         url: '/area',
-        text: '多变量时序图'
+        text: '多变量时序图',
+        component: () => import('./examplePages/AreaExample')
     }, 
     // {
     //     url: '/composite',
-    //     text: '复合图表模块示例'
+    //     text: '复合图表模块示例',
+    //     component: () => import('./examplePages/CompositeExample')
     // }
     ]
     return <BrowserRouter>
@@ -46,19 +45,19 @@ function App() {
             <ul className = 'nav'>
                 {navList.map((item, i) => <li
                     key = {i}
-                    className = {item.url === activeItem ? 'active' : ''}
-                    onClick = {() => setActiveItem(item.url)}
+                    className = {i === activeItem ? 'active' : ''}
+                    onClick = {() => setActiveItem(i)}
                 >
                     <Link to={item.url}>{item.text}</Link>
                 </li>)}
             </ul>
             <div className = 'content'>
-                <Route path = '/river' component = {RiverEx}></Route>
-                <Route path = '/strap' component = {StrapEx}></Route>
-                <Route path = '/stack' component = {StackEx}></Route>
-                <Route path = '/scatter' component = {ScatterEx}></Route>
-                <Route path = '/area' component = {AreaEx}></Route>
-                {/* <Route path = '/composite' component = {CompositeEx}></Route> */}
+                {navList.map((item, i) => (<Route 
+                    key = {i}
+                    path = {item.url} 
+                    component = {asyncImport(item.component)}>    
+                </Route>))}
+                <Redirect from='/' to='/river'></Redirect>
             </div>
         </div>
     </BrowserRouter>

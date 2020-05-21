@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-11 21:13:42
- * @LastEditTime: 2020-05-18 21:48:12
+ * @LastEditTime: 2020-05-18 22:46:53
  * @LastEditors: Please set LastEditors
  * @Description: 无线电背景下的态势频带图
  * @FilePath: /va_module/src/examplePages/StrapExample.js
@@ -87,7 +87,7 @@ function LayerStrapTest({
         }}
         yAxis = {{
             key: 'time', 
-            tag: 'time', 
+            tag: 'Time', 
             type: 'date', 
             step: 10, 
             domain: yDomain,
