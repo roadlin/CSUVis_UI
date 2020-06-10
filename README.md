@@ -21,11 +21,11 @@ http://47.99.51.12:8080/river
 |       |-- zones.js            窑炉监测数据
 |       |-- zones.json          窑炉堆叠数据
 |   |-- examplePages          用可视化组件应用示例
-|       |-- AreaExample.js      面积图示例组件
-|       |-- RiverExample.js     流图示例组件
-|       |-- ScatterExample.js   散点图示例组件
-|       |-- StackExample.js     堆叠图示例组件
-|       |-- StrapExample.js     频带图示例组件
+|       |-- AreaExample.js      多变量时序图
+|       |-- RiverExample.js     多维时变河流图
+|       |-- ScatterExample.js   多模式聚类分析图
+|       |-- StackExample.js     长期多变量态势演化图
+|       |-- StrapExample.js     短期单变量态势演化图
 |   |-- lib                   组件资源文件（如果想要复用 CSUVis_UI，则将该文件复制到自己的 react 项目中）
 |   |-- App.css               项目样式
 |   |-- App.js                项目组件
