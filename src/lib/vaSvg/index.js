@@ -20,7 +20,7 @@ function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj;
 /*
  * @Author: Lin Xiaoru
  * @Date: 2020-04-16 21:17:12
- * @LastEditTime: 2020-05-18 22:15:33
+ * @LastEditTime: 2020-06-14 17:50:53
  * @LastEditors: Please set LastEditors
  * @Description: 视图的包裹容器，本质上是个 svg，自定义添加坐标和宽高
  * @FilePath: /va_module/src/components/axes/index.js
@@ -215,6 +215,7 @@ var VASvg = function VASvg(_ref) {
     } // eslint-disable-next-line react-hooks/exhaustive-deps
 
   }, [xAxis, yAxes, height, width, padding, refObj]);
+  var hash = parseInt(Date.now() + Math.random() * 10000);
   return /*#__PURE__*/_react.default.createElement("svg", {
     style: {
       width: width + "px",
@@ -223,7 +224,7 @@ var VASvg = function VASvg(_ref) {
     ref: refObj,
     className: viewboxId
   }, /*#__PURE__*/_react.default.createElement("defs", null, /*#__PURE__*/_react.default.createElement("clipPath", {
-    id: viewboxId
+    id: viewboxId + "_" + hash
   }, /*#__PURE__*/_react.default.createElement("rect", {
     x: 0,
     y: 0,
@@ -232,7 +233,7 @@ var VASvg = function VASvg(_ref) {
   }))), /*#__PURE__*/_react.default.createElement("g", {
     className: "view",
     transform: "translate(" + padding[3] + ", " + padding[0] + ")",
-    clipPath: "url(#" + viewboxId + ")"
+    clipPath: viewboxId + "_" + hash
   }, children), /*#__PURE__*/_react.default.createElement("g", {
     className: "axis x",
     ref: xRef,

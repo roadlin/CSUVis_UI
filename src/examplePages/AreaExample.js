@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-12 15:28:01
- * @LastEditTime: 2020-05-18 21:31:42
+ * @LastEditTime: 2020-06-14 18:03:34
  * @LastEditors: Please set LastEditors
  * @Description: 应用于辊道窑背景下的多层次面积图
  * @FilePath: /va_module/src/examplePages/areaExample.js
@@ -9,6 +9,7 @@
 
 import React, { useState } from 'react'
 import { MultiArea } from '../lib'
+import MultiAreaStep from '../area'
 
 // import {data as temperatureMock, updateData as updateRiver} from '../data/temperature'
 import temperatureMock from '../data/test/temperature'
@@ -100,6 +101,70 @@ function AreaTest({
     ></MultiArea>)
 }
 
+function AreaStep({
+    width,
+    height,
+    xDomain,
+    levels,
+    setting,
+    type,
+    data
+}) {
+    return (<MultiAreaStep
+        // 视图的宽高及四周（上右下左）留白
+        width = {width}
+        height = {height + padding[0] + padding[2]}
+        padding = {padding}
+        type = {type}
+        // x 轴配置信息
+        xAxis = {{
+            key: 'time', 
+            tag: '', 
+            type: 'date', 
+            step: 5 * 60, 
+            domain: xDomain, 
+            formatFn: d => d3.timeFormat("%H:%M")(d), 
+            scaleFn: d3.scaleTime, 
+            direction: 'bottom', 
+            isShow: true,
+        }}
+        // y 轴配置信息，支持双坐标，每一个元素配置信息基本同 x 轴配置
+        yAxis = {[{
+            key: 'current', 
+            tag: ' ', 
+            type: 'number', 
+            step: 150, 
+            domain: [0, 150], 
+            formatFn: d => d, 
+            scaleFn: d3.scaleLinear, 
+            direction: 'left', 
+            isShow: true,
+        }, {
+            key: 'voltage', 
+            tag: ' ', 
+            type: 'number', 
+            step: 450, 
+            domain: [0, 450], 
+            formatFn: d => d, 
+            scaleFn: d3.scaleLinear, 
+            direction: 'right', 
+            isShow: true,
+        }]}
+        // 面积编码配置
+        areaConfig = {{
+            key: 'temperature',
+            levels: levels,
+            setting: setting,
+            colorMap: {
+                higher: ['#FCDAD5', '#EE7C6B', '#DF0029'],
+                lower: ['#D1E5F0', '#67A9CF', '#2166AC']
+            }
+        }}
+        // 展示数据
+        data = {data}
+    ></MultiAreaStep>)
+}
+
 const App = function () {
     const [dataIndex, setDataIndex] = useState(1)
     const [data, setData] = useState(temperatureMock.sensorTopData)
@@ -108,6 +173,17 @@ const App = function () {
         return [vals[0], vals[vals.length - 1]]
     }
     const xDomain = getDomain(temperatureMock.sensorTopData.concat(temperatureMock.sensorBottomData), 'time')
+    const stepAreaHeight = 120
+    const Area = ({type, height}) => (<AreaStep
+        width = {width}
+        height = {height}
+        xDomain = {xDomain}
+        levels = {[-30, -20, -10, 0, 10, 20, 30]}
+        setting = {360}         
+        data = {data}
+        type = {type}    
+    ></AreaStep>)
+    
     return <div style={{width: `${width}px`, margin: '0 auto'}}>
         <button onClick = {() => {setData(temperatureMock.sensorTopData); setDataIndex(1)}}>测试数据1</button>
         <button onClick = {() => {setData(temperatureMock.sensorBottomData); setDataIndex(2)}}>测试数据2</button>
@@ -118,8 +194,15 @@ const App = function () {
             xDomain = {xDomain}
             levels = {[-30, -20, -10, 0, 10, 20, 30]}
             setting = {360}         
-            data = {data}    
+            data = {data}  
         ></AreaTest>
+        <h4>绘图步骤：</h4>
+        <p>步骤1：</p>
+        <Area type={'layer'} height={6*stepAreaHeight}></Area>
+        <p>步骤2：</p>
+        <Area type={'overlay'} height={2*stepAreaHeight}></Area>
+        <p>步骤3：</p>
+        <Area type={'skew'} height={stepAreaHeight}></Area>
     </div>
 }
 export default App

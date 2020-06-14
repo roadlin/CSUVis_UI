@@ -13,12 +13,6 @@ function _getRequireWildcardCache() { if (typeof WeakMap !== "function") return 
 
 function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } if (obj === null || typeof obj !== "object" && typeof obj !== "function") { return { default: obj }; } var cache = _getRequireWildcardCache(); if (cache && cache.has(obj)) { return cache.get(obj); } var newObj = {}; var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor; for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) { var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null; if (desc && (desc.get || desc.set)) { Object.defineProperty(newObj, key, desc); } else { newObj[key] = obj[key]; } } } newObj.default = obj; if (cache) { cache.set(obj, newObj); } return newObj; }
 
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 function _objectWithoutPropertiesLoose(source, excluded) { if (source == null) return {}; var target = {}; var sourceKeys = Object.keys(source); var key, i; for (i = 0; i < sourceKeys.length; i++) { key = sourceKeys[i]; if (excluded.indexOf(key) >= 0) continue; target[key] = source[key]; } return target; }
 
 var CIRCLE_RADIUS = 2.5;
@@ -34,8 +28,12 @@ var MultiArea = function MultiArea(_ref) {
       props = _objectWithoutPropertiesLoose(_ref, ["height", "padding", "xAxis", "yAxis", "areaConfig", "data"]);
 
   var _useState = (0, _react.useState)([]),
-      levelData = _useState[0],
-      setLevelData = _useState[1]; // const [circleLineData, setCircleLineData] = useState([])
+      higherData = _useState[0],
+      setHigherData = _useState[1];
+
+  var _useState2 = (0, _react.useState)([]),
+      lowerData = _useState2[0],
+      setLowerData = _useState2[1]; // const [circleLineData, setCircleLineData] = useState([])
   // const [triangleLineData, setTriangleLineData] = useState([])
 
 
@@ -44,137 +42,124 @@ var MultiArea = function MultiArea(_ref) {
   var setting = areaConfig.setting; // 数据预处理：根据阈值切分数据
 
   (0, _react.useEffect)(function () {
-    var dataSpliceWithLevels = new Array(6).fill(1).map(function (val, index) {
-      return {
-        diffSection: [thds[index], thds[index + 1]],
-        values: []
-      };
-    });
+    var lower = [],
+        higher = [];
 
     for (var i = 0; i < data.length; i++) {
       var _element;
 
       var diff = data[i][areaConfig.key] - setting;
-      var element = (_element = {}, _element[xAxis.key] = data[i][xAxis.key], _element[areaConfig.key] = 0, _element); // levels: [-30, -20, -10, 0, 10, 20, 30]
+      var element = (_element = {}, _element[xAxis.key] = data[i][xAxis.key], _element.lower3 = 0, _element.lower2 = 0, _element.lower1 = 0, _element.higher3 = 0, _element.higher2 = 0, _element.higher1 = 0, _element); // levels: [-30, -20, -10, 0, 10, 20, 30]
 
       if (diff < 0) {
-        dataSpliceWithLevels[3].values.push(element);
-        dataSpliceWithLevels[4].values.push(element);
-        dataSpliceWithLevels[5].values.push(element);
         /* 
-            合并多个分支，比如配置 levels = [-30, -20, -10, 0, 10, 20, 30]
+            比如配置 levels = [-30, -20, -10, 0, 10, 20, 30]
             某一采集数据偏差为 -25，则应该存储为 3 段：
-            在 [-30, -20) 区间存储 -25
-            在 [-20, -10) 区间存储 -20
+            在 [-30, -20) 区间存储 -5
+            在 [-20, -10) 区间存储 -10
             在 [-10, 0) 区间存储 -10
         */
-
-        if (diff < thds[3]) {
-          var _objectSpread2;
-
-          dataSpliceWithLevels[2].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread2 = {}, _objectSpread2[areaConfig.key] = diff >= thds[2] ? diff : thds[2], _objectSpread2)));
+        if (diff < thds[0]) {
+          element.lower3 = thds[0] - thds[1];
+          element.lower2 = thds[1] - thds[2];
+          element.lower1 = thds[2] - thds[3];
+        } else if (diff < thds[1]) {
+          element.lower3 = diff - thds[1];
+          element.lower2 = thds[1] - thds[2];
+          element.lower1 = thds[2] - thds[3];
+        } else if (diff < thds[2]) {
+          element.lower2 = diff - thds[2];
+          element.lower1 = thds[2] - thds[3];
         } else {
-          var _objectSpread3;
+          element.lower1 = diff - thds[3];
+        } // element.lower3 = diff < thds[1] ? Math.max(diff - thds[1], thds[0] - thds[1]) : 0
+        // element.lower2 = diff < thds[2] ? Math.max(diff - thds[2], thds[1] - thds[2]) : 0
+        // element.lower1 = diff < thds[3] ? Math.max(diff - thds[3], thds[2] - thds[3]) : 0
 
-          dataSpliceWithLevels[2].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread3 = {}, _objectSpread3[areaConfig.key] = 0, _objectSpread3)));
-        }
-
-        if (diff < thds[2]) {
-          var _objectSpread4;
-
-          dataSpliceWithLevels[1].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread4 = {}, _objectSpread4[areaConfig.key] = diff >= thds[1] ? diff : thds[1], _objectSpread4)));
-        } else {
-          var _objectSpread5;
-
-          dataSpliceWithLevels[1].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread5 = {}, _objectSpread5[areaConfig.key] = 0, _objectSpread5)));
-        }
-
-        if (diff < thds[1]) {
-          var _objectSpread6;
-
-          dataSpliceWithLevels[0].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread6 = {}, _objectSpread6[areaConfig.key] = diff >= thds[0] ? diff : thds[0], _objectSpread6)));
-        } else {
-          var _objectSpread7;
-
-          dataSpliceWithLevels[0].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread7 = {}, _objectSpread7[areaConfig.key] = 0, _objectSpread7)));
-        }
       } else {
-        dataSpliceWithLevels[0].values.push(element);
-        dataSpliceWithLevels[1].values.push(element);
-        dataSpliceWithLevels[2].values.push(element);
-
-        if (diff >= thds[3]) {
-          var _objectSpread8;
-
-          dataSpliceWithLevels[3].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread8 = {}, _objectSpread8[areaConfig.key] = diff < thds[4] ? diff : thds[4], _objectSpread8)));
+        // element.higher3 = diff > thds[5] ? Math.min(thds[6] - diff, thds[6] - thds[5]) : 0
+        // element.higher2 = diff > thds[4] ? Math.min(thds[5] - diff, thds[5] - thds[4]) : 0
+        // element.higher1 = diff > thds[3] ? Math.min(thds[4] - diff, thds[4] - thds[3]) : 0
+        if (diff > thds[6]) {
+          element.higher3 = thds[6] - thds[5];
+          element.higher2 = thds[5] - thds[4];
+          element.higher1 = thds[4] - thds[3];
+        } else if (diff > thds[5]) {
+          element.higher3 = diff - thds[5];
+          element.higher2 = thds[5] - thds[4];
+          element.higher1 = thds[4] - thds[3];
+        } else if (diff > thds[4]) {
+          element.higher2 = diff - thds[4];
+          element.higher1 = thds[4] - thds[3];
         } else {
-          var _objectSpread9;
-
-          dataSpliceWithLevels[3].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread9 = {}, _objectSpread9[areaConfig.key] = 0, _objectSpread9)));
-        }
-
-        if (diff >= thds[4]) {
-          var _objectSpread10;
-
-          dataSpliceWithLevels[4].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread10 = {}, _objectSpread10[areaConfig.key] = diff < thds[5] ? diff : thds[5], _objectSpread10)));
-        } else {
-          var _objectSpread11;
-
-          dataSpliceWithLevels[4].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread11 = {}, _objectSpread11[areaConfig.key] = 0, _objectSpread11)));
-        }
-
-        if (diff >= thds[5]) {
-          var _objectSpread12;
-
-          dataSpliceWithLevels[5].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread12 = {}, _objectSpread12[areaConfig.key] = diff < thds[6] ? diff : thds[6], _objectSpread12)));
-        } else {
-          var _objectSpread13;
-
-          dataSpliceWithLevels[5].values.push(_objectSpread(_objectSpread({}, element), {}, (_objectSpread13 = {}, _objectSpread13[areaConfig.key] = 0, _objectSpread13)));
+          element.higher1 = diff - thds[3];
         }
       }
+
+      lower.push(element);
+      higher.push(element);
     }
 
-    setLevelData(dataSpliceWithLevels);
+    setHigherData(higher);
+    setLowerData(lower);
   }, [areaConfig.key, data, setting, thds, xAxis.key]); // 比例尺
 
   var circleLineScale = yAxis[0].scale;
   var triangleLineScale = yAxis[1].scale;
   var xScale = xAxis.scale;
 
+  var getSeries = function getSeries(data, keys) {
+    return keys.map(function (key) {
+      return data.map(function (d) {
+        var _ref2;
+
+        return _ref2 = {}, _ref2[xAxis.key] = d[xAxis.key], _ref2.val = d[key], _ref2;
+      });
+    });
+  };
+
+  var getScale = function getScale(domain, range) {
+    return d3.scaleLinear().domain(domain).range(range);
+  };
+
   var areaDecorator = function areaDecorator(scale, y0) {
-    return d3.area().curve(d3.curveMonotoneX).x(xScale).y1(function (d) {
-      return scale(d[areaConfig.key]);
+    return d3.area().curve(d3.curveBasis).x(xScale).y1(function (d) {
+      return scale(d.val);
     }).y0(y0);
   };
 
   var lineDecorator = function lineDecorator(scale) {
     return d3.line().curve(d3.curveMonotoneX).x(xScale).y(scale);
-  };
+  }; // 作图的相关变量
 
+
+  var lowerSeries = getSeries(lowerData, ['lower1', 'lower2', 'lower3']);
+  var higherSeries = getSeries(higherData, ['higher1', 'higher2', 'higher3']);
+  var higherDomains = [[0, thds[4] - thds[3]], [0, thds[5] - thds[4]], [0, thds[6] - thds[5]]];
+  var lowerDomains = [[0, thds[2] - thds[3]], [0, thds[1] - thds[2]], [0, thds[0] - thds[1]]];
+  var higherRange = [canvasHeight, 0];
+  var lowerRange = [0, canvasHeight];
+  var higherY0 = canvasHeight;
+  var lowerY0 = 0;
   return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("g", {
     className: "area"
   }, /*#__PURE__*/_react.default.createElement("g", {
     className: "lowerArea"
-  }, levelData.slice(0, 3).reverse().map(function (d, i) {
-    var scale = d3.scaleLinear().domain(d.diffSection).range([canvasHeight, 0]);
-    var areaScale = areaDecorator(scale, 0);
+  }, lowerSeries.map(function (series, i) {
     return /*#__PURE__*/_react.default.createElement("path", {
       key: i,
-      className: "area",
+      className: "area_" + i,
       fill: areaConfig.colorMap.lower[i],
-      d: areaScale(d.values)
+      d: areaDecorator(getScale(lowerDomains[i], lowerRange), lowerY0)(series)
     });
   })), /*#__PURE__*/_react.default.createElement("g", {
     className: "higherArea"
-  }, levelData.slice(3).map(function (d, i) {
-    var scale = d3.scaleLinear().domain(d.diffSection).range([canvasHeight, 0]);
-    var areaScale = areaDecorator(scale, canvasHeight);
+  }, higherSeries.map(function (series, i) {
     return /*#__PURE__*/_react.default.createElement("path", {
       key: i,
-      className: "area",
+      className: "area_" + i,
       fill: areaConfig.colorMap.higher[i],
-      d: areaScale(d.values)
+      d: areaDecorator(getScale(higherDomains[i], higherRange), higherY0)(series)
     });
   }))), /*#__PURE__*/_react.default.createElement("g", null, /*#__PURE__*/_react.default.createElement("g", {
     className: "circleLine"

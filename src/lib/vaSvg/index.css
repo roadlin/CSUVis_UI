@@ -15,7 +15,7 @@
 .y.left {
     text-anchor: end;
 }
-.y.right, .y.right .axisTag {
+.y.right {
     text-anchor: start;
 }
 

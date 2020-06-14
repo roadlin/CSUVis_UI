@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-11 21:13:42
- * @LastEditTime: 2020-05-18 22:46:53
+ * @LastEditTime: 2020-06-14 18:27:12
  * @LastEditors: Please set LastEditors
  * @Description: 无线电背景下的态势频带图
  * @FilePath: /va_module/src/examplePages/StrapExample.js
@@ -52,8 +52,8 @@ function EqualStrapTest({
         enableHover = {true}
         enableZoom = {{x: true, y: false}}
         hoverHandle = {(x, y) => (`
-            <p>Freq: ${x} MHz</p>
-            <p>Time: ${y}</p>
+            <p>坐标: ${x}</p>
+            <p>时间: ${y}</p>
         `)}
         enableBrush = {{
             x: true,
@@ -102,8 +102,8 @@ function LayerStrapTest({
         data = {data}
         enableHover = {true}
         hoverHandle = {(x, y) => (`
-            <p>Freq: ${x} MHz</p>
-            <p>Time: ${y}</p>
+            <p>坐标: ${x} MHz</p>
+            <p>时间: ${y}</p>
         `)}
         enableBrush = {{
             x: true,

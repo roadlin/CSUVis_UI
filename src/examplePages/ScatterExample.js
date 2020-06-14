@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-12 15:27:51
- * @LastEditTime: 2020-05-18 22:20:23
+ * @LastEditTime: 2020-06-14 18:28:50
  * @LastEditors: Please set LastEditors
  * @Description: 用于无线电背景下的散点图
  * @FilePath: /va_module/src/examplePages/ScatterExample.js
@@ -99,16 +99,16 @@ function ScatterTest({
         geoKey = {'category'}
         enableHover = {true}
         pointHoverHandle = {d => (`
-            ${d.category !== -1 ? `<p>SignalID: ${d.isNewSignal ? 'un' : 'au'}${d.category}</p>` : '<p>Nosie</p>'} 
-            <p>Freq: ${d.freq.toFixed(2)} MHz</p>
-            <p>STR: ${d.dbm.toFixed(2)} dBm</p>
-            <p>SNR: ${d.snr.toFixed(2)} dB</p>
-            <p>Date: ${d3.timeFormat("%Y-%m-%d")(new Date(d.time))}</p>
-            <p>Time: ${d3.timeFormat("%H:%M:%S")(new Date(d.time))}</p>
+            ${d.category !== -1 ? `<p>聚类编号: ${d.isNewSignal ? 'un' : 'au'}${d.category}</p>` : '<p>噪声</p>'} 
+            <p>聚类中心: ${d.freq.toFixed(2)}</p>
+            <p>左侧属性值: ${d.dbm.toFixed(2)}</p>
+            <p>右侧属性值: ${d.snr.toFixed(2)}</p>
+            <p>日期: ${d3.timeFormat("%Y-%m-%d")(new Date(d.time))}</p>
+            <p>时间: ${d3.timeFormat("%H:%M:%S")(new Date(d.time))}</p>
         `)}
         geoHoverHandle = {d => (`
-            <p>SignalID: ${d[0].isNewSignal ? 'un' : 'au'}${d[0].category}</p>
-            <p>SFV Number: ${d.length}</p>
+            <p>聚类编号: ${d[0].isNewSignal ? 'un' : 'au'}${d[0].category}</p>
+            <p>数据点数量: ${d.length}</p>
           `)}
     ></Scatter>)
 }
@@ -221,7 +221,7 @@ const App = function () {
                 <option value="0">属性1</option>
                 <option value="1">属性2</option>
                 <option value="2">属性3</option>
-                <option value="3">Time</option>
+                <option value="3">时间</option>
             </select>
         </div>
         <ScatterTest

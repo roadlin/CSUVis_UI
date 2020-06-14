@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-04-27 11:24:26
- * @LastEditTime: 2020-05-18 21:37:30
+ * @LastEditTime: 2020-06-14 18:21:59
  * @LastEditors: Please set LastEditors
  * @Description: 用于无线电背景下的流图示例
  * @FilePath: /va_module/src/AppTest.js
@@ -88,17 +88,17 @@ function RiverTest({
         }}
         enableHover = {true}
         hoverHandle = {d => (`
-            <p>SignalID: ${d.isNewSignal ? 'un' : 'au'}${d.category}</p>
-            <p>Freq: ${d.freq.toFixed(2)} MHz</p>
-            <p>STR: ${d.dbm.toFixed(2)} dBm</p>
-            <p>SNR: ${d.snr.toFixed(2)} dB</p>
-            <p>Date: ${d3.timeFormat("%Y-%m-%d")(new Date(d.time))}</p>
-            <p>Time: ${d3.timeFormat("%H:%M:%S")(new Date(d.time))}</p>
+            <p>流编号: ${d.isNewSignal ? 'un' : 'au'}${d.category}</p>
+            <p>流中心: ${d.freq.toFixed(2)}</p>
+            <p>左侧属性值: ${d.dbm.toFixed(2)}</p>
+            <p>右侧属性值: ${d.snr.toFixed(2)}</p>
+            <p>日期: ${d3.timeFormat("%Y-%m-%d")(new Date(d.time))}</p>
+            <p>时间: ${d3.timeFormat("%H:%M:%S")(new Date(d.time))}</p>
         `)}
         enableBrush = {{
             x: true,
             y: true,
-            cb: (xSection, ySection) => console.log(`选中\n freq 区间为\t${xSection}\n time 区间为\t${ySection}`)
+            cb: (xSection, ySection) => console.log(`选中\n x轴 区间为\t${xSection}\n y轴 区间为\t${ySection}`)
         }}
     ></River>)
 }

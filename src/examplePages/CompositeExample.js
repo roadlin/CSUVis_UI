@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-05-12 15:28:50
- * @LastEditTime: 2020-05-17 22:06:07
+ * @LastEditTime: 2020-06-14 18:24:29
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: /va_module/src/examplePages/CompositeExample.js
@@ -201,12 +201,12 @@ function RiverTest({
         }}
         enableHover = {true}
         hoverHandle = {d => (`
-            <p>SignalID: ${d.isNewSignal ? 'un' : 'au'}${d.category}</p>
-            <p>Freq: ${d.freq.toFixed(2)} MHz</p>
-            <p>STR: ${d.dbm.toFixed(2)} dBm</p>
-            <p>SNR: ${d.snr.toFixed(2)} dB</p>
-            <p>Date: ${d3.timeFormat("%Y-%m-%d")(new Date(d.time))}</p>
-            <p>Time: ${d3.timeFormat("%H:%M:%S")(new Date(d.time))}</p>
+            <p>流编号: ${d.isNewSignal ? 'un' : 'au'}${d.category}</p>
+            <p>流中心: ${d.freq.toFixed(2)}</p>
+            <p>左侧属性值: ${d.dbm.toFixed(2)}</p>
+            <p>右侧属性值: ${d.snr.toFixed(2)}</p>
+            <p>日期: ${d3.timeFormat("%Y-%m-%d")(new Date(d.time))}</p>
+            <p>时间: ${d3.timeFormat("%H:%M:%S")(new Date(d.time))}</p>
         `)}
         enableBrush = {{
             x: true,
